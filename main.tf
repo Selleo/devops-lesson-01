@@ -13,3 +13,6 @@ module "s3_assets" {
   bucket = "selleo-workshops-assets"
 }
 
+resource "aws_secretsmanager_secret" "api" {
+  name = "/dev/api"
+}
