@@ -1,12 +1,4 @@
 terraform {
-  cloud {
-    organization = "selleo-workshops"
-
-    workspaces {
-      name = "lesson-01-basics"
-    }
-  }
-
   required_version = "~> 1.1"
 
   required_providers {
@@ -22,7 +14,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Terraform = "true"
+      Terraform   = "true"
+      Environment = "dev"
     }
   }
 }
