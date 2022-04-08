@@ -1,0 +1,48 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:DescribeSessions",
+                "ssm:GetConnectionStatus",
+                "ssm:DescribeInstanceProperties",
+                "ec2:DescribeInstances"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Action": [
+                "ssm:StartSession"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow",
+            "Condition": {
+                "StringEquals": {
+                    "ssm:resourceTag/${ec2_tag_key}": [
+                        "${ec2_tag_value}"
+                    ]
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:TerminateSession",
+                "ssm:ResumeSession"
+            ],
+            "Resource": [
+                "arn:aws:ssm:*:*:session/$${aws:username}-*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kms:GenerateDataKey"
+            ],
+            "Resource": "${kms_arn}"
+        }
+    ]
+}
