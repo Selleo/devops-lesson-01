@@ -30,15 +30,33 @@ resource "aws_iam_policy" "ssm_access" {
     ec2_tag_key   = "ssm-agent"
     ec2_tag_value = "true"
     kms_arn       = aws_kms_key.ssh.arn
+    document_arn  = aws_ssm_document.ssm.arn
   })
 }
 
-# resource "aws_ssm_document" "ssm" {
-#   name          = "ssh"
-#   document_type = "Session"
+resource "aws_ssm_document" "ssm" {
+  name          = "ssh"
+  document_type = "Session"
 
-#   content = jsonencode({
-#     schemaVersion = "2.2"
-#     # kmsKeyId = aws_kms_key.ssh.key_id
-#   })
-# }
+  content = jsonencode({
+    schemaVersion = "1.0"
+    sessionType   = "Standard_Stream"
+    description   = "Document to hold regional settings for Session Manager"
+    inputs = {
+      s3BucketName                = "",
+      s3KeyPrefix                 = "",
+      s3EncryptionEnabled         = true,
+      cloudWatchLogGroupName      = "",
+      cloudWatchEncryptionEnabled = true,
+      idleSessionTimeout          = "20",
+      maxSessionDuration          = "",
+      cloudWatchStreamingEnabled  = false,
+      kmsKeyId                    = aws_kms_key.ssh.arn
+      runAsEnabled                = true,
+      runAsDefaultUser            = "ec2-user",
+      shellProfile = {
+        linux = ""
+      }
+    }
+  })
+}

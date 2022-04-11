@@ -7,6 +7,7 @@
                 "ssm:DescribeSessions",
                 "ssm:GetConnectionStatus",
                 "ssm:DescribeInstanceProperties",
+                "ssm:DescribeInstanceInformation",
                 "ec2:DescribeInstances"
             ],
             "Resource": "*"
@@ -24,6 +25,20 @@
                     "ssm:resourceTag/${ec2_tag_key}": [
                         "${ec2_tag_value}"
                     ]
+                }
+            }
+        },
+        {
+            "Action": [
+                "ssm:StartSession"
+            ],
+            "Resource": [
+                "${document_arn}"
+            ],
+            "Effect": "Allow",
+            "Condition": {
+                "BoolIfExists": {
+                    "ssm:SessionDocumentAccessCheck": "true"
                 }
             }
         },

@@ -27,7 +27,7 @@ resource "aws_alb_listener" "https" {
   load_balancer_arn = module.load_balancer.loadbalancer_id
   port              = 443
   protocol          = "HTTPS"
-  certificate_arn   = aws_acm_certificate.bez_sosu.arn
+  certificate_arn   = aws_acm_certificate.workshops.arn
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
 
   default_action {
@@ -35,4 +35,3 @@ resource "aws_alb_listener" "https" {
     type             = "forward"
   }
 }
-
