@@ -31,7 +31,7 @@ resource "aws_security_group" "ecs_default" {
 
 module "ecs_service" {
   source  = "Selleo/backend/aws//modules/ecs-service"
-  version = "0.6.1"
+  version = "0.7.1"
 
   name           = "rails-api"
   vpc_id         = module.vpc.vpc_id

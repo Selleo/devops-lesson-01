@@ -1,6 +1,6 @@
 module "load_balancer" {
   source  = "Selleo/backend/aws//modules/load-balancer"
-  version = "0.6.1"
+  version = "0.7.1"
 
   name       = "workshop-03"
   vpc_id     = module.vpc.vpc_id
@@ -27,7 +27,7 @@ resource "aws_alb_listener" "https" {
   load_balancer_arn = module.load_balancer.loadbalancer_id
   port              = 443
   protocol          = "HTTPS"
-  certificate_arn   = aws_acm_certificate.workshops.arn
+  certificate_arn   = module.acm.arn
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
 
   default_action {
