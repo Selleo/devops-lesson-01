@@ -29,15 +29,6 @@ resource "aws_security_group" "ecs_default" {
   vpc_id      = module.vpc.vpc_id
 }
 
-resource "aws_security_group_rule" "allow_ssh" {
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.ecs_default.id
-}
-
 module "ecs_service" {
   source  = "Selleo/backend/aws//modules/ecs-service"
   version = "0.6.1"
