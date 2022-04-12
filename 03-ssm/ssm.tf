@@ -1,3 +1,11 @@
+module "iam_ssm" {
+  source  = "Selleo/iam/aws//modules/ssm"
+  version = "0.3.0"
+
+  kms_arn          = aws_kms_key.ssh.arn
+  ssm_document_arn = aws_ssm_document.ssm.arn
+}
+
 resource "aws_kms_key" "ssh" {
   description             = "Used for SSH"
   deletion_window_in_days = 10
@@ -12,9 +20,7 @@ resource "aws_iam_policy" "ssm" {
   name        = "ssm"
   description = "Access EC2 via SSM"
 
-  policy = templatefile("./tpl/ssm_policy.json", {
-    kms_arn = aws_kms_key.ssh.arn
-  })
+  policy = module.iam_ssm.ssm_policy_rendered
 }
 
 resource "aws_iam_role_policy_attachment" "ssm" {
@@ -26,12 +32,7 @@ resource "aws_iam_policy" "ssm_access" {
   name        = "ssm-access"
   description = "Allows IAM users to access EC2 via SSM"
 
-  policy = templatefile("./tpl/ssm_access_policy.json", {
-    ec2_tag_key   = "ssm-agent"
-    ec2_tag_value = "true"
-    kms_arn       = aws_kms_key.ssh.arn
-    document_arn  = aws_ssm_document.ssm.arn
-  })
+  policy = module.iam_ssm.ssm_access_policy_rendered
 }
 
 resource "aws_ssm_document" "ssm" {

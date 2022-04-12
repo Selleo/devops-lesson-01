@@ -1,6 +1,6 @@
 module "ecs_cluster" {
   source  = "Selleo/backend/aws//modules/ecs-cluster"
-  version = "0.6.1"
+  version = "0.7.1"
 
   name_prefix        = "workshop-03"
   region             = "eu-west-3"
@@ -15,10 +15,6 @@ module "ecs_cluster" {
     min_size         = 1
     max_size         = 3
     desired_capacity = 2
-  }
-
-  tags = {
-    ssm-agent = "true"
   }
 }
 
