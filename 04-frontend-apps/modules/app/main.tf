@@ -90,6 +90,11 @@ resource "aws_cloudfront_origin_access_identity" "this" {
   comment = "Application ${var.app_id}"
 }
 
+resource "aws_iam_policy" "deployment_policy" {
+  name   = "cdn-deployment-${var.app_id}"
+  policy = data.aws_iam_policy_document.this.json
+}
+
 data "aws_iam_policy_document" "this" {
   version = "2012-10-17"
 
@@ -102,6 +107,30 @@ data "aws_iam_policy_document" "this" {
 
     resources = [
       aws_cloudfront_distribution.this.arn
+    ]
+  }
+
+  statement {
+    sid = 2
+    actions = [
+      "s3:GetObject",
+      "s3:DeleteObject",
+      "s3:PutObject",
+    ]
+
+    resources = [
+      "${data.aws_s3_bucket.apps.arn}${local.origin_path}/*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:ListBucket",
+      "s3:GetBucketLocation",
+    ]
+
+    resources = [
+      data.aws_s3_bucket.apps.arn
     ]
   }
 }
