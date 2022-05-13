@@ -1,17 +1,8 @@
-resource "aws_s3_bucket" "applications" {
-  bucket = "selleo-applications"
-}
-
-resource "aws_s3_bucket_acl" "applications" {
-  bucket = aws_s3_bucket.applications.id
-  acl    = "private"
-}
-
 module "app1" {
   source = "./modules/app"
 
   app_id          = "dashboard"
-  s3_bucket       = aws_s3_bucket.applications.id
+  s3_bucket       = module.app_storage.id
   certificate_arn = module.acm.arn
   aliases         = ["dashboard.workshops.selleo.app"]
 }
@@ -20,40 +11,9 @@ module "app2" {
   source = "./modules/app"
 
   app_id          = "devpath"
-  s3_bucket       = aws_s3_bucket.applications.id
+  s3_bucket       = module.app_storage.id
   certificate_arn = module.acm.arn
   aliases         = ["devpath.workshops.selleo.app"]
-}
-
-data "aws_iam_policy_document" "applications" {
-  version = "2012-10-17"
-
-  statement {
-    sid = 1
-
-    actions = [
-      "s3:GetObject",
-    ]
-
-    resources = [
-      "${aws_s3_bucket.applications.arn}/apps/dashboard/*",
-      "${aws_s3_bucket.applications.arn}/apps/devpath/*"
-    ]
-
-    principals {
-      type = "AWS"
-      identifiers = [
-        module.app1.oai_iam_arn,
-        module.app2.oai_iam_arn
-      ]
-    }
-  }
-}
-
-resource "aws_s3_bucket_policy" "applications" {
-  bucket = aws_s3_bucket.applications.id
-
-  policy = data.aws_iam_policy_document.applications.json
 }
 
 data "aws_route53_zone" "workshops" {
