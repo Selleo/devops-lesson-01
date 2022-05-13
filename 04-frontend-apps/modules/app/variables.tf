@@ -1,8 +1,8 @@
 # required
 
-variable "comment" {
+variable "app_id" {
   type        = string
-  description = "Any comment you want to add to the distribution for easier identification."
+  description = "Application ID and S3 folder"
 }
 
 variable "aliases" {
@@ -15,13 +15,9 @@ variable "certificate_arn" {
   description = "AWS ACM certificate ARN."
 }
 
-variable "s3_origin" {
-  type = object({
-    path                        = string
-    bucket_regional_domain_name = string
-  })
-
-  description = "S3 origin configuration"
+variable "s3_bucket" {
+  type        = string
+  description = "S3 bucket for Cloudfront origin."
 }
 
 # optional
