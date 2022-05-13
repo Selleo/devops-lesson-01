@@ -10,34 +10,19 @@ resource "aws_s3_bucket_acl" "applications" {
 module "app1" {
   source = "./modules/app"
 
-  comment         = "Sample app1"
+  app_id          = "dashboard"
+  s3_bucket       = aws_s3_bucket.applications.id
   certificate_arn = module.acm.arn
-  s3_origin = {
-    bucket_regional_domain_name = aws_s3_bucket.applications.bucket_regional_domain_name
-    path                        = "/apps/dashboard"
-  }
-  aliases = ["dashboard.workshops.selleo.app"]
+  aliases         = ["dashboard.workshops.selleo.app"]
 }
 
 module "app2" {
   source = "./modules/app"
 
-  comment         = "Sample app2"
+  app_id          = "devpath"
+  s3_bucket       = aws_s3_bucket.applications.id
   certificate_arn = module.acm.arn
-  s3_origin = {
-    bucket_regional_domain_name = aws_s3_bucket.applications.bucket_regional_domain_name
-    path                        = "/apps/devpath"
-  }
-  aliases = ["devpath.workshops.selleo.app"]
-
-  custom_error_responses = [
-    {
-      error_code            = 403
-      error_caching_min_ttl = 0
-      response_code         = 200
-      response_page_path    = "/"
-    }
-  ]
+  aliases         = ["devpath.workshops.selleo.app"]
 }
 
 data "aws_iam_policy_document" "applications" {

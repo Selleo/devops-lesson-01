@@ -1,9 +1,14 @@
 locals {
-  origin_id = "main"
+  origin_id   = "main"
+  origin_path = "/apps/${var.app_id}"
+}
+
+data "aws_s3_bucket" "apps" {
+  bucket = var.s3_bucket
 }
 
 resource "aws_cloudfront_distribution" "this" {
-  comment             = var.comment
+  comment             = "Application ${var.app_id}"
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = var.default_root_object
@@ -29,8 +34,8 @@ resource "aws_cloudfront_distribution" "this" {
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloudfront-distribution-origin.html
 
     origin_id   = local.origin_id # must be unique within distribution
-    origin_path = var.s3_origin.path
-    domain_name = var.s3_origin.bucket_regional_domain_name
+    origin_path = local.origin_path
+    domain_name = data.aws_s3_bucket.apps.bucket_regional_domain_name
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.this.cloudfront_access_identity_path
@@ -59,6 +64,14 @@ resource "aws_cloudfront_distribution" "this" {
     max_ttl                = var.default_cache_behavior.max_ttl
   }
 
+  # make sure frontend router works by redirection missing paths to index.html
+  custom_error_response {
+    error_code            = 403
+    error_caching_min_ttl = 0
+    response_code         = 200
+    response_page_path    = "/"
+  }
+
   dynamic "custom_error_response" {
     for_each = var.custom_error_responses
 
@@ -74,7 +87,7 @@ resource "aws_cloudfront_distribution" "this" {
 }
 
 resource "aws_cloudfront_origin_access_identity" "this" {
-  comment = var.comment
+  comment = "Application ${var.app_id}"
 }
 
 data "aws_iam_policy_document" "this" {
