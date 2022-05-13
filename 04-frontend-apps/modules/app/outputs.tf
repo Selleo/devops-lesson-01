@@ -1,9 +1,9 @@
-output "distribution_id" {
+output "id" {
   value       = aws_cloudfront_distribution.this.id
   description = "CDN distribution ID."
 }
 
-output "distribution_arn" {
+output "arn" {
   value       = aws_cloudfront_distribution.this.arn
   description = "CDN distribution ARN."
 }
@@ -23,7 +23,7 @@ output "oai_iam_arn" {
   description = "Origin Access Identity pre-generated ARN that can be used in S3 bucket policies."
 }
 
-output "distribution_invalidation_policy_json" {
-  value       = data.aws_iam_policy_document.this.json
-  description = "IAM policy document for invalidating CloudFront distribution."
+output "deployment_policy_id" {
+  value       = aws_iam_policy.deployment_policy.arn
+  description = "IAM policy for deploying CloudFront distribution."
 }
