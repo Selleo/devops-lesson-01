@@ -1,9 +1,5 @@
-data "aws_route53_zone" "workshops" {
-  name = "workshops.selleo.app"
-}
-
 resource "aws_route53_record" "app1" {
-  zone_id = data.aws_route53_zone.workshops.zone_id
+  zone_id = module.acm.zone_id
   name    = "dashboard"
   type    = "A"
 
@@ -15,7 +11,7 @@ resource "aws_route53_record" "app1" {
 }
 
 resource "aws_route53_record" "app2" {
-  zone_id = data.aws_route53_zone.workshops.zone_id
+  zone_id = module.acm.zone_id
   name    = "devpath"
   type    = "A"
 

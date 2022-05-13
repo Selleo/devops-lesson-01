@@ -1,6 +1,6 @@
 module "acm" {
   source  = "Selleo/acm/aws//modules/wildcard"
-  version = "0.1.0"
+  version = "0.2.0"
 
   providers = {
     aws = aws.global
